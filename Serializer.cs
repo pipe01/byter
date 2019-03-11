@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Tester")]
 
@@ -45,6 +46,19 @@ namespace Byter
                 throw new ArgumentNullException(nameof(type));
 
             Cache.GetWriter(type)(obj, ByteWriter);
+        }
+
+        public void WriteStruct<T>(T obj) where T : struct
+        {
+            int length = Marshal.SizeOf(obj);
+            IntPtr ptr = Marshal.AllocHGlobal(length);
+            byte[] buffer = new byte[length];
+
+            Marshal.StructureToPtr(obj, ptr, true);
+            Marshal.Copy(ptr, buffer, 0, length);
+            Marshal.FreeHGlobal(ptr);
+
+            Stream.Write(buffer, 0, length);
         }
 
         public void Dispose()
