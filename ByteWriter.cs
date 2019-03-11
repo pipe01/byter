@@ -24,59 +24,42 @@ namespace Byter
 
         public bool Write(object obj, Type type)
         {
-            switch (obj)
-            {
-                case ulong d:
-                    BinWriter.Write(d);
-                    break;
-                case uint d:
-                    BinWriter.Write(d);
-                    break;
-                case ushort d:
-                    BinWriter.Write(d);
-                    break;
-                case string d:
-                    BinWriter.Write(d);
-                    break;
-                case float d:
-                    BinWriter.Write(d);
-                    break;
-                case sbyte d:
-                    BinWriter.Write(d);
-                    break;
-                case long d:
-                    BinWriter.Write(d);
-                    break;
-                case int d:
-                    BinWriter.Write(d);
-                    break;
-                case short d:
-                    BinWriter.Write(d);
-                    break;
-                case decimal d:
-                    BinWriter.Write(d);
-                    break;
-                case char[] d:
-                    BinWriter.Write(d);
-                    break;
-                case byte[] d:
-                    BinWriter.Write(d);
-                    break;
-                case byte d:
-                    BinWriter.Write(d);
-                    break;
-                case bool d:
-                    BinWriter.Write(d);
-                    break;
-                case double d:
-                    BinWriter.Write(d);
-                    break;
-                case char d:
-                    BinWriter.Write(d);
-                    break;
-                default:
-                    return false;
-            }
+            if (type == typeof(ulong))
+                BinWriter.Write((ulong)obj);
+            else if (type == typeof(uint))
+                BinWriter.Write((uint)obj);
+            else if (type == typeof(ushort))
+                BinWriter.Write((ushort)obj);
+            else if (type == typeof(string))
+                BinWriter.Write((string)obj);
+            else if (type == typeof(float))
+                BinWriter.Write((float)obj);
+            else if (type == typeof(sbyte))
+                BinWriter.Write((sbyte)obj);
+            else if (type == typeof(long))
+                BinWriter.Write((long)obj);
+            else if (type == typeof(int))
+                BinWriter.Write((int)obj);
+            else if (type == typeof(short))
+                BinWriter.Write((short)obj);
+            else if (type == typeof(decimal))
+                BinWriter.Write((decimal)obj);
+            else if (type == typeof(char[]))
+                BinWriter.Write((char[])obj);
+            else if (type == typeof(byte[]))
+                BinWriter.Write((byte[])obj);
+            else if (type == typeof(byte))
+                BinWriter.Write((byte)obj);
+            else if (type == typeof(bool))
+                BinWriter.Write((bool)obj);
+            else if (type == typeof(double))
+                BinWriter.Write((double)obj);
+            else if (type == typeof(char))
+                BinWriter.Write((char)obj);
+            else if (type.IsEnum)
+                Write(obj, type.GetEnumUnderlyingType());
+            else
+                return false;
 
             return true;
         }
