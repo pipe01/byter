@@ -9,7 +9,8 @@ namespace Byter
 {
     public class Serializer : IDisposable
     {
-        private readonly Stream Stream;
+        public Stream BaseStream { get; set; }
+
         private readonly bool OwnStream;
         private readonly WriterCache Cache = new WriterCache();
 
@@ -17,7 +18,7 @@ namespace Byter
 
         public Serializer(Stream stream, bool own = false)
         {
-            this.Stream = stream;
+            this.BaseStream = stream;
             this.OwnStream = own;
 
             this.ByteWriter = new ByteWriter(stream);
@@ -31,6 +32,8 @@ namespace Byter
         {
             Write(obj, typeof(T));
         }
+
+        public void WriteRaw(byte[] data) => BaseStream.Write(data, 0, data.Length);
 
         public void Write(object obj)
         {
@@ -54,17 +57,25 @@ namespace Byter
             IntPtr ptr = Marshal.AllocHGlobal(length);
             byte[] buffer = new byte[length];
 
-            Marshal.StructureToPtr(obj, ptr, true);
+            try
+            {
+                Marshal.StructureToPtr(obj, ptr, true);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
             Marshal.Copy(ptr, buffer, 0, length);
             Marshal.FreeHGlobal(ptr);
 
-            Stream.Write(buffer, 0, length);
+            BaseStream.Write(buffer, 0, length);
         }
 
         public void Dispose()
         {
             if (OwnStream)
-                Stream.Dispose();
+                BaseStream.Dispose();
         }
     }
 }
