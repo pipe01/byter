@@ -57,15 +57,7 @@ namespace Byter
             IntPtr ptr = Marshal.AllocHGlobal(length);
             byte[] buffer = new byte[length];
 
-            try
-            {
-                Marshal.StructureToPtr(obj, ptr, true);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            Marshal.StructureToPtr(obj, ptr, true);
             Marshal.Copy(ptr, buffer, 0, length);
             Marshal.FreeHGlobal(ptr);
 
