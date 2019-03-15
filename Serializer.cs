@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -68,6 +71,23 @@ namespace Byter
         {
             if (OwnStream)
                 BaseStream.Dispose();
+        }
+
+        public static IEnumerable<(MemberInfo, Type)> GetSerializedFields(Type type, Method forMethod)
+        {
+            return type
+                .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .Select(o => ((MemberInfo)o, o.FieldType))
+                .Concat(
+                    type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        .Select(o => ((MemberInfo)o, o.PropertyType)))
+                .Where(o =>
+                {
+                    var attr = o.Item1.GetCustomAttribute<IgnoreAttribute>();
+
+                    return attr == null || (attr.OnMethod & forMethod) != forMethod;
+                })
+                .OrderBy(o => o.Item1.GetCustomAttribute<OrderAttribute>()?.Order ?? 0);
         }
     }
 }

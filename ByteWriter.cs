@@ -44,10 +44,6 @@ namespace Byter
                 BinWriter.Write((short)obj);
             else if (type == typeof(decimal))
                 BinWriter.Write((decimal)obj);
-            else if (type == typeof(char[]))
-                BinWriter.Write((char[])obj);
-            else if (type == typeof(byte[]))
-                BinWriter.Write((byte[])obj);
             else if (type == typeof(byte))
                 BinWriter.Write((byte)obj);
             else if (type == typeof(bool))
